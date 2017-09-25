@@ -1,2 +1,2 @@
 # goerr
-Benchkrams Error Package
+Error Handling Primitives for Benchkram
