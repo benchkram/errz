@@ -1,0 +1,2 @@
+# goerr
+Benchkrams Error Package
