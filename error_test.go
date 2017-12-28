@@ -1,6 +1,7 @@
 package goerr
 
 import (
+	"log"
 	"testing"
 
 	"github.com/pkg/errors"
@@ -29,7 +30,7 @@ func Tier2() (err error) {
 	return
 }
 
-//TestMultiTierErrors test if original error after multiple function calls is returned
+//TestMultiTierErrors test if tier2 error is returned (after multiple function calls)
 func TestMultiTierErrors(t *testing.T) {
 	err := Tier1()
 
@@ -56,6 +57,31 @@ func TestNullPointerDereference(t *testing.T) {
 	t.Errorf("This point must not be reached: %d", number)
 }
 
+func CreateTier2NullPointerDereference() {
+	var numberptr *int
+	number := 1 + *numberptr
+
+	//Dead Code
+	log.Printf("This point must not be reached: %d", number)
+}
+
+//Creates a memory corruption which is handled by recover
+func TestTier2NullPointerDereference(t *testing.T) {
+	var err error
+	defer func() {
+		if err == nil {
+			t.Errorf("No error occured, expecting : runtime error: invalid memory address or nil pointer dereference")
+		}
+	}() //Called after recover
+	defer Recover(&err)
+
+	//Creating memory corruption leading to panic
+	CreateTier2NullPointerDereference()
+
+	//Dead Code
+	t.Errorf("This point must not be reached")
+}
+
 //Test handling od a common error
 func TestCommonError(t *testing.T) {
 	var err error
@@ -70,20 +96,10 @@ func TestCommonError(t *testing.T) {
 }
 
 //Cannot fail, must not print anything to console
+//just here to assure the api contract
 func TestEmptyRecover(t *testing.T) {
 	defer Recover()
 }
-
-// //This should report a error directly to console
-// func TestEmptyRecoverNilPointerDereference(t *testing.T) {
-// 	defer Recover()a
-//
-// 	var numberptr *int
-// 	number := 1 + *numberptr
-//
-// 	//Dead Code
-// 	t.Errorf("This point must not be reached: %d", number)
-// }
 
 func TestFatal(t *testing.T) {
 	var err error

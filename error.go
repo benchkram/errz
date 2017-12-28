@@ -1,4 +1,4 @@
-//Package goerr provides highlevel error handling primtives
+//Package goerr provides highlevel error handling helpers
 //
 //
 package goerr
@@ -22,7 +22,7 @@ func Fatal(err error, msgs ...string) {
 	}
 }
 
-//Recover recovers a panic introduced by Fatal,any other function which calls panics
+//Recover recovers a panic introduced by Fatal, any other function which calls panics
 //				or a memory corruption
 //Must be used at the top of the function
 //
