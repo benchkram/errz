@@ -1,7 +1,7 @@
-//Package goerr provides highlevel error handling helpers
+//Package errz provides highlevel error handling helpers
 //
 //
-package goerr
+package errz
 
 import (
 	"log"
@@ -23,9 +23,9 @@ func Fatal(err error, msgs ...string) {
 }
 
 //Recover recovers a panic introduced by Fatal, any other function which calls panics
-//				or a memory corruption
-//Must be used at the top of the function
+//				or a memory corruption. Logs the error when called without args.
 //
+//Must be used at the top of the function defered
 //defer Recover()
 //or
 //defer Recover(&err)
