@@ -1,4 +1,4 @@
-package goerr
+package errz
 
 import (
 	"log"
@@ -6,6 +6,8 @@ import (
 
 	"github.com/pkg/errors"
 )
+
+var g_err error
 
 const (
 	errorMsg   string = "An intended error occured"
@@ -114,4 +116,46 @@ func TestFatal(t *testing.T) {
 	Fatal(err, "Panic on error")
 
 	t.Errorf("This point must not be reached")
+}
+
+//****** Benchmarks ********
+
+func CheckLogRaw() {
+	if g_err != nil {
+		log.Println(g_err)
+	}
+}
+
+func CheckLog() {
+	Log(g_err)
+}
+
+func CheckFatal() {
+	//defer
+	Fatal(g_err)
+	Recover(&g_err)
+}
+
+func BenchmarkCheckLogRaw(b *testing.B) {
+	g_err = nil
+	for n := 0; n < b.N; n++ {
+		CheckLogRaw()
+	}
+	g_err = nil
+}
+
+func BenchmarkCheckLog(b *testing.B) {
+	g_err = nil
+	for n := 0; n < b.N; n++ {
+		CheckLog()
+	}
+	g_err = nil
+}
+
+func BenchmarkCheckFatal(b *testing.B) {
+	g_err = nil
+	for n := 0; n < b.N; n++ {
+		CheckFatal()
+	}
+	g_err = nil
 }
