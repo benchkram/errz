@@ -17,6 +17,7 @@ if err != nil {
 ##### When should i **not** use errz?
 If you write algorithms, modules or libraries with high performance in mind.
 
+-
 
 The name of this package was inspired by [Marcel van Lohuizen](https://github.com/mpvl).  
 It has a dependency on [github.com/pkg/errors ](https://github.com/pkg/errors)
