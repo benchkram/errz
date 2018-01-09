@@ -131,9 +131,8 @@ func CheckLog() {
 }
 
 func CheckFatal() {
-	//defer
+	defer Recover(&g_err)
 	Fatal(g_err)
-	Recover(&g_err)
 }
 
 func BenchmarkCheckLogRaw(b *testing.B) {
