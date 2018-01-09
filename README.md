@@ -8,11 +8,11 @@ Inspired from [error handling by Dave Chaney](https://dave.cheney.net/2016/04/27
   * ..to give context to your errors trough stack traces
   * ..to avoid the verbose but idiomatic error handling pattern
 ```go
-    err := someFunc()
-    if err != nil {
-      log.Println(err)
-      return
-    }
+err := someFunc()
+if err != nil {
+  log.Println(err)
+  return
+}
 ```
 
 ##### When should i **not** use errz?
@@ -24,7 +24,7 @@ If you write algorithms, modules or libraries with high performance in mind.
 
 #### Return an error, add context, log and stop execution
 A common use case is to return an error an stop further code execution in the currently executed function. To avoid the 3-4 lines we use a panic/recover pattern to stop code execution after the error occured and pass the error to the calling funtion
-```
+```go
 func bar() (err error){
   defer errz.Recover(&err)
 
@@ -41,8 +41,8 @@ This pattern will not just handle errors produced through errz.Fatal(). It will 
 #### Logging
 When you just want to log/report an error just do
 ```go
-  err := foo()
-  errz.Log(err)
+err := foo()
+errz.Log(err)
 ```
 This is useful during development and mostly used at the top level of an application
 
