@@ -1,4 +1,5 @@
 [![GoDoc](https://godoc.org/github.com/golang/gddo?status.svg)](http://godoc.org/github.com/benchkram/errz)
+[![Go Report Card](https://goreportcard.com/badge/github.com/equanox/gotron)](https://goreportcard.com/report/github.com/equanox/gotron)
 # errz
 Package errz allows you to handle errors in one line of code.
 
