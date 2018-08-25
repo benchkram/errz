@@ -6,8 +6,35 @@ package errz
 import (
 	"log"
 
+	"github.com/rs/zerolog"
+	zlog "github.com/rs/zerolog/log"
+
 	"github.com/pkg/errors"
 )
+
+//errzLogger is a surrogate to logging.
+//it enable using different logging packages.
+type errzLogger struct {
+	useZeroLog bool
+}
+
+func (el errzLogger) Printf(format string, v ...interface{}) {
+	if el.useZeroLog {
+		zlog.Error().Msgf(format, v)
+		return
+	}
+
+	log.Printf(format, v)
+}
+
+var (
+	logger errzLogger = errzLogger{useZeroLog: false}
+)
+
+func UseZeroLog(zl zerolog.Logger) {
+	zlog.Logger = zl
+	logger.useZeroLog = true
+}
 
 //Fatal panics on error
 //First parameter of msgs is used each following variadic arg is dropped
@@ -53,7 +80,7 @@ func Recover(errs ...*error) {
 		if e != nil {
 			*e = errmsg
 		} else {
-			log.Printf("%+v", errmsg)
+			logger.Printf("%+v", errmsg)
 		}
 	}
 }
@@ -67,6 +94,6 @@ func Log(err error, msgs ...string) {
 			str = msg
 			break
 		}
-		log.Printf("%+v", errors.Wrap(err, str))
+		logger.Printf("%+v", errors.Wrap(err, str))
 	}
 }

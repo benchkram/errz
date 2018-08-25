@@ -7,9 +7,20 @@
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
   version = "v0.8.0"
 
+[[projects]]
+  name = "github.com/rs/zerolog"
+  packages = [
+    ".",
+    "internal/cbor",
+    "internal/json",
+    "log"
+  ]
+  revision = "77db4b4f350e31be66a57c332acb7721cf9ff9bb"
+  version = "v1.8.0"
+
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "be52a27ec302b8a6c01d9cceda92c94ebffda1207e5c8ec8bee6579b794eaa8e"
+  inputs-digest = "8de6f75af13743724d2feb8e2d9650ef04d7b41dd31f7af70631f47f6387f636"
   solver-name = "gps-cdcl"
   solver-version = 1
