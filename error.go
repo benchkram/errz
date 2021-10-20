@@ -1,6 +1,4 @@
-//Package errz provides highlevel error handling helpers
-//
-//
+// Package errz provides highlevel error handling helpers
 package errz
 
 import (
@@ -9,8 +7,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-//Fatal panics on error
-//First parameter of msgs is used each following variadic arg is dropped
+// Fatal panics on error
+// First parameter of msgs is used each following variadic arg is dropped
 func Fatal(err error, msgs ...string) {
 	if err != nil {
 		var str string
@@ -22,13 +20,13 @@ func Fatal(err error, msgs ...string) {
 	}
 }
 
-//Recover recovers a panic introduced by Fatal, any other function which calls panics
-//				or a memory corruption. Logs the error when called without args.
+// Recover recovers a panic introduced by Fatal, any other function which calls panics
+// 				or a memory corruption. Logs the error when called without args.
 //
-//Must be used at the top of the function defered
-//defer Recover()
-//or
-//defer Recover(&err)
+// Must be used at the top of the function defered
+// defer Recover()
+// or
+// defer Recover(&err)
 func Recover(errs ...*error) {
 	var e *error
 	for _, err := range errs {
@@ -36,20 +34,20 @@ func Recover(errs ...*error) {
 		break
 	}
 
-	//handle panic
+	// handle panic
 	if r := recover(); r != nil {
 		var errmsg error
-		//Preserve error which might have happend before panic/recover
-		//Check if a error ptr was passed + a error occured
+		// Preserve error which might have happend before panic/recover
+		// Check if a error ptr was passed + a error occured
 		if e != nil && *e != nil {
 			//When error occured before panic then Wrap panic error around it
 			errmsg = errors.Wrap(*e, r.(error).Error())
 		} else {
-			//No error occured just add a stacktrace
+			// No error occured just add a stacktrace
 			errmsg = errors.Wrap(r.(error), "")
 		}
 
-		//If error cant't bubble up -> Log it
+		// If error cant't bubble up -> Log it
 		if e != nil {
 			*e = errmsg
 		} else {
@@ -58,8 +56,8 @@ func Recover(errs ...*error) {
 	}
 }
 
-//Log logs an error + stack trace directly to console or file
-//Use this at the top level to publish errors without creating a new error object
+// Log logs an error + stack trace directly to console or file
+// Use this at the top level to publish errors without creating a new error object
 func Log(err error, msgs ...string) {
 	if err != nil {
 		var str string
