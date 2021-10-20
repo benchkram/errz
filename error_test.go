@@ -1,7 +1,7 @@
 package errz
 
 import (
-	"log"
+	"fmt"
 	"testing"
 
 	"github.com/pkg/errors"
@@ -10,7 +10,6 @@ import (
 var g_err error
 
 const (
-	errorMsg   string = "An intended error occured"
 	tier1Error string = "Tier 1 error msg"
 	tier2Error string = "Tier 2 error msg"
 )
@@ -21,7 +20,7 @@ func Tier1() (err error) {
 	err = Tier2()
 	Fatal(err)
 
-	//Should never be reached when tier2 returns err
+	// Should never be reached when tier2 returns err
 	err = errors.New(tier1Error)
 
 	return
@@ -32,7 +31,7 @@ func Tier2() (err error) {
 	return
 }
 
-//TestMultiTierErrors test if tier2 error is returned (after multiple function calls)
+// TestMultiTierErrors test if tier2 error is returned (after multiple function calls)
 func TestMultiTierErrors(t *testing.T) {
 	err := Tier1()
 
@@ -41,7 +40,7 @@ func TestMultiTierErrors(t *testing.T) {
 	}
 }
 
-//Creates a memory corruption which is handled by recover
+// Creates a memory corruption which is handled by recover
 func TestNullPointerDereference(t *testing.T) {
 	var err error
 	defer func() {
@@ -64,23 +63,23 @@ func CreateTier2NullPointerDereference() {
 	number := 1 + *numberptr
 
 	//Dead Code
-	log.Printf("This point must not be reached: %d", number)
+	fmt.Printf("This point must not be reached: %d", number)
 }
 
-//Creates a memory corruption which is handled by recover
+// Creates a memory corruption which is handled by recover
 func TestTier2NullPointerDereference(t *testing.T) {
 	var err error
 	defer func() {
 		if err == nil {
 			t.Errorf("No error occured, expecting : runtime error: invalid memory address or nil pointer dereference")
 		}
-	}() //Called after recover
+	}() // Called after recover
 	defer Recover(&err)
 
-	//Creating memory corruption leading to panic
+	// Creating memory corruption leading to panic
 	CreateTier2NullPointerDereference()
 
-	//Dead Code
+	// Dead Code
 	t.Errorf("This point must not be reached")
 }
 
@@ -122,7 +121,7 @@ func TestFatal(t *testing.T) {
 
 func CheckLogRaw() {
 	if g_err != nil {
-		log.Println(g_err)
+		fmt.Println(g_err)
 	}
 }
 
