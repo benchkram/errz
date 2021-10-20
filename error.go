@@ -2,7 +2,7 @@
 package errz
 
 import (
-	"log"
+	"fmt"
 
 	"github.com/pkg/errors"
 )
@@ -40,7 +40,7 @@ func Recover(errs ...*error) {
 		// Preserve error which might have happend before panic/recover
 		// Check if a error ptr was passed + a error occured
 		if e != nil && *e != nil {
-			//When error occured before panic then Wrap panic error around it
+			// When error occured before panic then Wrap panic error around it
 			errmsg = errors.Wrap(*e, r.(error).Error())
 		} else {
 			// No error occured just add a stacktrace
@@ -51,7 +51,7 @@ func Recover(errs ...*error) {
 		if e != nil {
 			*e = errmsg
 		} else {
-			log.Printf("%+v", errmsg)
+			log(errmsg)
 		}
 	}
 }
@@ -60,11 +60,18 @@ func Recover(errs ...*error) {
 // Use this at the top level to publish errors without creating a new error object
 func Log(err error, msgs ...string) {
 	if err != nil {
-		var str string
-		for _, msg := range msgs {
-			str = msg
-			break
-		}
-		log.Printf("%+v", errors.Wrap(err, str))
+		log(err, msgs...)
 	}
+}
+
+// log splits the error in it's wrapped part and the original error message
+// and writes it to the underlying logger.
+func log(err error, msgs ...string) {
+	var str string
+	for _, msg := range msgs {
+		str = msg
+		break
+	}
+	sum := fmt.Errorf("%s", fmt.Sprintf("%+v", err))
+	logger.Error(errors.Unwrap(err), str, logKeyStack, sum.Error())
 }

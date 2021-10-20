@@ -1,5 +1,8 @@
 module github.com/Benchkram/errz
 
-go 1.14
+go 1.13
 
-require github.com/pkg/errors v0.9.1 // indirect
+require (
+	github.com/go-logr/logr v1.1.0
+	github.com/pkg/errors v0.9.1
+)
