@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	logKeyStack = "stack"
+	logKeyCallstack = "callstack"
 )
 
 var logger logr.Logger = funcr.New(func(prefix, args string) {

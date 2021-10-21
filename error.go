@@ -3,6 +3,7 @@ package errz
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/pkg/errors"
 )
@@ -21,7 +22,7 @@ func Fatal(err error, msgs ...string) {
 }
 
 // Recover recovers a panic introduced by Fatal, any other function which calls panics
-// 				or a memory corruption. Logs the error when called without args.
+// or a memory corruption. Logs the error when called without args.
 //
 // Must be used at the top of the function defered
 // defer Recover()
@@ -34,20 +35,19 @@ func Recover(errs ...*error) {
 		break
 	}
 
-	// handle panic
 	if r := recover(); r != nil {
-		var errmsg error
-		// Preserve error which might have happend before panic/recover
-		// Check if a error ptr was passed + a error occured
-		if e != nil && *e != nil {
-			// When error occured before panic then Wrap panic error around it
-			errmsg = errors.Wrap(*e, r.(error).Error())
-		} else {
-			// No error occured just add a stacktrace
-			errmsg = errors.Wrap(r.(error), "")
+		errmsg := r.(error)
+
+		// In case of a memory corruption (e.g. nil pointer dereference)
+		// the error does not have a stack trace and therefore one
+		// is added here.
+		cause := errors.Cause(errmsg)
+		sum := fmt.Sprintf("%+v", errmsg)
+		if cause.Error() == sum {
+			errmsg = errors.WithStack(r.(error))
 		}
 
-		// If error cant't bubble up -> Log it
+		// If error cant't bubble up -> log it
 		if e != nil {
 			*e = errmsg
 		} else {
@@ -56,8 +56,9 @@ func Recover(errs ...*error) {
 	}
 }
 
-// Log logs an error + stack trace directly to console or file
-// Use this at the top level to publish errors without creating a new error object
+// Log an error + stack trace to the underlying logger
+// Usually used at the top level of a application to report errors without
+// handling them.
 func Log(err error, msgs ...string) {
 	if err != nil {
 		log(err, msgs...)
@@ -65,13 +66,20 @@ func Log(err error, msgs ...string) {
 }
 
 // log splits the error in it's wrapped part and the original error message
-// and writes it to the underlying logger.
+// also writes it to the underlying logger.
 func log(err error, msgs ...string) {
 	var str string
 	for _, msg := range msgs {
 		str = msg
 		break
 	}
-	sum := fmt.Errorf("%s", fmt.Sprintf("%+v", err))
-	logger.Error(errors.Unwrap(err), str, logKeyStack, sum.Error())
+	cause := errors.Cause(err)
+	sum := fmt.Sprintf("%+v", err)
+	// remove original error from stack trace
+	stack := strings.Replace(sum, cause.Error(), "", 1)
+
+	// fmt.Printf("cause: %s\n", err.Error())
+	// fmt.Printf("sum: %s\n", sum)
+	// fmt.Printf("stack: %s\n", stack)
+	logger.Error(cause, str, logKeyCallstack, stack)
 }
