@@ -91,6 +91,9 @@ func Recover(errs ...*error) {
 // errors without handling them.
 func Log(err error) {
 	if err != nil {
+		if isPlain(err) {
+			err = errors.WithStack(err)
+		}
 		log(err)
 	}
 }
