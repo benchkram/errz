@@ -83,7 +83,7 @@ func TestTier2NullPointerDereference(t *testing.T) {
 	t.Errorf("This point must not be reached")
 }
 
-//Test handling od a common error
+// Test handling od a common error
 func TestCommonError(t *testing.T) {
 	var err error
 	defer func() {
@@ -112,7 +112,37 @@ func TestFatal(t *testing.T) {
 	defer Recover(&err)
 
 	err = errors.New("Thrown a error")
-	Fatal(err, "Panic on error")
+	Fatal(err)
+
+	t.Errorf("This point must not be reached")
+}
+
+func TestFatalm(t *testing.T) {
+	var err error
+	defer func() {
+		if err == nil {
+			t.Errorf("Error did not occure")
+		}
+	}()
+	defer Recover(&err)
+
+	err = errors.New("Thrown a error")
+	Fatalm(err, "addtional error context")
+
+	t.Errorf("This point must not be reached")
+}
+
+func TestFatalf(t *testing.T) {
+	var err error
+	defer func() {
+		if err == nil {
+			t.Errorf("Error did not occure")
+		}
+	}()
+	defer Recover(&err)
+
+	err = errors.New("Thrown a error")
+	Fatalf(err, "%s", "addtional error context")
 
 	t.Errorf("This point must not be reached")
 }
