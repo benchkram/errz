@@ -1,4 +1,4 @@
-module github.com/Benchkram/errz
+module github.com/benchkram/errz
 
 go 1.13
 
